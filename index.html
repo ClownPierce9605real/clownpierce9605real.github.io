@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows XP Browser Emulator</title>
+    <script src="https://cdn.jsdelivr.net/npm/v86@0.3/build/libv86.js"></script>
+    <style>
+        body { background-color: #000; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #screen_container { border: 2px solid #333; }
+    </style>
+</head>
+<body>
+
+    <div id="screen_container">
+        <div style="white-space: pre; font: 14px monospace; line-height: 14px"></div>
+        <canvas style="display: none"></canvas>
+    </div>
+
+    <script>
+        window.onload = function() {
+            var emulator = new V86Starter({
+                // Point to the WebAssembly core of the emulator
+                wasm_path: "https://cdn.jsdelivr.net/npm/v86@0.3/build/v86.wasm",
+                
+                // Allocate RAM (512 MB is good for XP)
+                memory_size: 512 * 1024 * 1024, 
+                // Allocate Video RAM (8 MB)
+                vga_memory_size: 8 * 1024 * 1024, 
+                
+                // Tell the emulator where to draw the screen
+                screen_container: document.getElementById("screen_container"),
+                
+                // BIOS files (required to boot)
+                bios: {
+                    url: "seabios.bin", 
+                },
+                vga_bios: {
+                    url: "vgabios.bin", 
+                },
+                
+                // Your Windows XP Hard Drive Image
+                hda: {
+                    url: "windows-xp.img", 
+                    async: true, // Crucial for large files so the browser doesn't crash
+                },
+                
+                autostart: true,
+            });
+        };
+    </script>
+</body>
+</html>
